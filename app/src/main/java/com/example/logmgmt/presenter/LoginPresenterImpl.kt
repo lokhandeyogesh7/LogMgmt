@@ -1,7 +1,6 @@
 package com.example.logmgmt.presenter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.example.logmgmt.model.LoginResult
 import com.example.logmgmt.network.NetworkClient
 import com.example.logmgmt.network.NetworkInterface
@@ -11,16 +10,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONObject
-import io.reactivex.observers.DisposableObserver
-
 
 
 class LoginPresenterImpl(val loginView: LoginContract.LoginView) : LoginContract.LoginPresenter {
 
     @SuppressLint("CheckResult")
     override fun getLoginResponseFromServer(email: String, password: String) {
-        var jsonObject=JSONObject()
+        var jsonObject=HashMap<String,String>()
         jsonObject.put("email",email)
         jsonObject.put("password",password)
 
@@ -28,10 +24,10 @@ class LoginPresenterImpl(val loginView: LoginContract.LoginView) : LoginContract
     }
 
 
-    fun getObservable(email: JSONObject?): Observable<LoginResult>? {
+    fun getObservable(email: HashMap<String, String>): Observable<LoginResult>? {
         println("post params ")
         return NetworkClient().getRetrofit().create(NetworkInterface::class.java)
-            .getLoginResponse(email!!)
+            .getLoginResponse(email)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
